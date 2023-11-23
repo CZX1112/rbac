@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.czx.mapper.PermissionMapper">
+
+    <resultMap id="PermissionMap" type="com.czx.pojo.Permission">
+        <id column="permission_id" property="permission_id" />
+        <result column="permission_name" property="permission_name" />
+        <result column="description" property="description" />
+        <result column="url" property="url" />
+    </resultMap>
+
+    <select id="getAllPermissions" resultType="com.czx.pojo.Permission">
+        select * from permissions
+    </select>
+
+    <insert id="add" parameterType="long">
+        INSERT INTO role_permissions (role_id, permission_id) VALUES (#{role_id}, #{permission_id})
+    </insert>
+
+    <delete id="deleteById">
+        delete from role_permissions where role_id=#{role_id}
+    </delete>
+
+    <select id="getByPermissionname" parameterType="com.czx.pojo.Permission" resultType="com.czx.pojo.Permission">
+        SELECT * FROM permissions WHERE permission_name = #{permission_name}
+    </select>
+
+    <select id="getByUsername" resultMap="PermissionMap">
+        SELECT
+        permissions.permission_id,
+        permissions.permission_name,
+        permissions.description,
+        permissions.url
+        FROM
+        user
+        JOIN user_roles ON user.user_id = user_roles.user_id
+        JOIN role_permissions ON role_permissions.role_id = user_roles.role_id
+        JOIN permissions ON permissions.permission_id = role_permissions.permission_id
+        WHERE
+        user.username = #{username}
+        ORDER BY
+        permissions.permission_id;  <!-- 或者其他你想要的排序字段 -->
+    </select>
+
+    <insert id="addPermission" parameterType="com.czx.pojo.Permission">
+        INSERT INTO permissions(permission_id, permission_name, description, url) VALUES (#{permission_id},#{permission_name},#{description},#{url})
+    </insert>
+
+    <delete id="deleteByPermissionId">
+        delete from permissions where permission_id=#{permission_id}
+    </delete>
+
+    <update id="updatePermission" parameterType="com.czx.pojo.Permission">
+        UPDATE permissions
+        SET
+            permission_name = #{permission_name},
+            description = #{description},
+            url = #{url}
+        WHERE permission_id = #{permission_id}
+    </update>
+
+</mapper>

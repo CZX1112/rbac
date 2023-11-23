@@ -1,0 +1,37 @@
+// const AccessTokenKey = 'ACCESS_TOKEN'
+
+// // 获取 Token
+// export function getAccessToken() {
+//   return localStorage.getItem(AccessTokenKey)
+// }
+
+// // 设置 Token
+// export function setToken(token) {
+//   localStorage.setItem(AccessTokenKey, token)
+// }
+
+// // 删除 Token
+// export function removeToken() {
+//   localStorage.removeItem(AccessTokenKey)
+// }
+
+const AccessTokenKey = 'ACCESS_TOKEN'
+const RefreshTokenKey = 'REFRESH_TOKEN'
+
+export function getAccessToken() {
+  return localStorage.getItem(AccessTokenKey)
+}
+
+export function getRefreshToken() {
+  return localStorage.getItem(RefreshTokenKey)
+}
+
+export function setToken(token) {
+  localStorage.setItem(AccessTokenKey, token.accessToken)
+  localStorage.setItem(RefreshTokenKey, token.refreshToken)
+}
+
+export function removeToken() {
+  localStorage.removeItem(AccessTokenKey)
+  localStorage.removeItem(RefreshTokenKey)
+}

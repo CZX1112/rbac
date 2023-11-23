@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czx.mapper.UserMapper">
+
+    <resultMap id="UserMap" type="com.czx.pojo.User">
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="gender" property="gender" />
+        <result column="status" property="status" />
+        <result column="email" property="email" />
+    </resultMap>
+
+    <resultMap id="MenuMap" type="com.czx.pojo.Menu">
+        <id column="menu_id" property="menu_id" />
+        <result column="menu_name" property="menu_name" />
+        <result column="url" property="url" />
+    </resultMap>
+
+    <select id="getMenuByUsername" resultMap="MenuMap">
+        SELECT menus.menu_id, menus.menu_name, menus.url
+        FROM user
+                 JOIN user_roles ON user.user_id = user_roles.user_id
+                 JOIN role_permissions ON role_permissions.role_id = user_roles.role_id
+                 JOIN menu_permissions ON menu_permissions.permission_id = role_permissions.permission_id
+                 JOIN menus ON menus.menu_id = menu_permissions.menu_id
+        WHERE user.username = #{username}
+        ORDER BY menus.order;
+    </select>
+
+    <select id="getAllUsers" resultMap="UserMap">
+        SELECT * FROM user
+    </select>
+
+    <select id="getUserByUsername" parameterType="com.czx.pojo.User" resultType="com.czx.pojo.User">
+        SELECT * FROM user WHERE username = #{username}
+    </select>
+
+    <insert id="insert" parameterType="com.czx.pojo.User">
+        INSERT INTO user(username,name,password,phone,gender,status,email,address,createTime,updateTime) VALUES (#{username},#{name},#{password},#{phone},#{gender},1,#{email},#{address},NOW(),NOW())
+    </insert>
+
+
+    <delete id="delete">
+        DELETE FROM user WHERE user_id=#{user_id}
+    </delete>
+
+    <update id="update" parameterType="com.czx.pojo.User">
+        UPDATE user SET status=#{status} WHERE user_id=#{user_id}
+    </update>
+
+    <select id="getRoleByUsername" parameterType="com.czx.pojo.Role" resultType="com.czx.pojo.Role">
+        SELECT *
+        FROM user
+                 JOIN user_roles ON user.user_id = user_roles.user_id
+                 JOIN role ON user_roles.role_id = role.role_id
+        WHERE user.username = #{username}; -- 替换 'your_username' 为实际的用户名
+    </select>
+
+    <select id="getRoleByUserid" parameterType="com.czx.pojo.Role" resultType="com.czx.pojo.Role">
+        SELECT *
+        FROM user
+                 JOIN user_roles ON user.user_id = user_roles.user_id
+                 JOIN role ON user_roles.role_id = role.role_id
+        WHERE user.user_id = #{user_id}; -- 替换 'your_username' 为实际的用户名
+    </select>
+
+
+</mapper>
